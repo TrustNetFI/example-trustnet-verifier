@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.codec.binary.Hex;
+import org.bitcoinj.core.Base58;
 import org.jose4j.base64url.internal.apache.commons.codec.binary.Base64;
 
 import com.github.jsonldjava.utils.JsonUtils;
@@ -30,13 +32,13 @@ public class ExampleVerifier {
 		clientUniResolver.setResolverUri("https://uniresolver.io/1.0/identifiers/");
 
 		URI issuer = verifiableCredential.getIssuer();
-		System.out.println("Issuer: " + issuer.toString());
+		System.out.println("Issuer DID: " + issuer.toString());
 
 		DDO ddo = clientUniResolver.resolve(issuer.toString());
 		System.out.println(JsonUtils.toPrettyString(ddo.getJsonLdObject()));
 		String issuerPublicKeyBase64 = ddo.getOwner().getPublicKeyBase64();
-		System.out.println("Issuer Public Key: " + issuerPublicKeyBase64);
-		issuerPublicKey = Base64.decodeBase64(issuerPublicKeyBase64);
+		issuerPublicKey = Base58.decode(issuerPublicKeyBase64);
+		System.out.println("Issuer Public Key: " + Hex.encodeHexString(issuerPublicKey));
 
 		// verify verifiable credential
 
