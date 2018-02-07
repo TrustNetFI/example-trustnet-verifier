@@ -6,14 +6,13 @@ import java.util.LinkedHashMap;
 
 import org.apache.commons.codec.binary.Hex;
 import org.bitcoinj.core.Base58;
-import org.jose4j.base64url.internal.apache.commons.codec.binary.Base64;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
 import fi.trustnet.verifiablecredentials.VerifiableCredential;
 import info.weboftrust.ldsignatures.validator.Ed25519Signature2018LdValidator;
 import uniresolver.client.ClientUniResolver;
-import uniresolver.ddo.DDO;
+import uniresolver.did.DIDDocument;
 
 public class ExampleVerifier {
 
@@ -34,9 +33,9 @@ public class ExampleVerifier {
 		URI issuer = verifiableCredential.getIssuer();
 		System.out.println("Issuer DID: " + issuer.toString());
 
-		DDO ddo = clientUniResolver.resolve(issuer.toString());
-		System.out.println(JsonUtils.toPrettyString(ddo.getJsonLdObject()));
-		String issuerPublicKeyBase64 = ddo.getOwner().getPublicKeyBase64();
+		DIDDocument didDocument = clientUniResolver.resolve(issuer.toString()).getResult();
+		System.out.println(JsonUtils.toPrettyString(didDocument.getJsonLdObject()));
+		String issuerPublicKeyBase64 = didDocument.getPublicKeys().get(0).getPublicKeyBase64();
 		issuerPublicKey = Base58.decode(issuerPublicKeyBase64);
 		System.out.println("Issuer Public Key: " + Hex.encodeHexString(issuerPublicKey));
 
