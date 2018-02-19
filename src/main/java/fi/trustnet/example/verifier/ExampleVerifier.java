@@ -13,6 +13,7 @@ import fi.trustnet.verifiablecredentials.VerifiableCredential;
 import info.weboftrust.ldsignatures.validator.Ed25519Signature2018LdValidator;
 import uniresolver.client.ClientUniResolver;
 import uniresolver.did.DIDDocument;
+import uniresolver.result.ResolutionResult;
 
 public class ExampleVerifier {
 
@@ -28,15 +29,17 @@ public class ExampleVerifier {
 		byte[] issuerPublicKey;
 
 		ClientUniResolver clientUniResolver = new ClientUniResolver();
-		clientUniResolver.setResolverUri("https://uniresolver.io/1.0/identifiers/");
+		clientUniResolver.setResolveUri("https://uniresolver.io/1.0/identifiers/");
 
 		URI issuer = verifiableCredential.getIssuer();
 		System.out.println("Issuer DID: " + issuer.toString());
 
-		DIDDocument didDocument = clientUniResolver.resolve(issuer.toString()).getResult();
+		ResolutionResult resolutionResult = clientUniResolver.resolve(issuer.toString());
+		System.out.println(resolutionResult.toJson());
+		DIDDocument didDocument = resolutionResult.getDidDocument();
 		System.out.println(JsonUtils.toPrettyString(didDocument.getJsonLdObject()));
-		String issuerPublicKeyBase64 = didDocument.getPublicKeys().get(0).getPublicKeyBase64();
-		issuerPublicKey = Base58.decode(issuerPublicKeyBase64);
+		String issuerPublicKeyBase58 = didDocument.getPublicKeys().get(0).getPublicKeyBase58();
+		issuerPublicKey = Base58.decode(issuerPublicKeyBase58);
 		System.out.println("Issuer Public Key: " + Hex.encodeHexString(issuerPublicKey));
 
 		// verify verifiable credential
