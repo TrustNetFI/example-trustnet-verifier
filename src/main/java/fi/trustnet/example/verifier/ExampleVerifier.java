@@ -9,11 +9,11 @@ import org.bitcoinj.core.Base58;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
+import did.DIDDocument;
 import fi.trustnet.verifiablecredentials.VerifiableCredential;
 import info.weboftrust.ldsignatures.validator.Ed25519Signature2018LdValidator;
 import uniresolver.client.ClientUniResolver;
-import uniresolver.did.DIDDocument;
-import uniresolver.result.ResolutionResult;
+import uniresolver.result.ResolveResult;
 
 public class ExampleVerifier {
 
@@ -34,9 +34,9 @@ public class ExampleVerifier {
 		URI issuer = verifiableCredential.getIssuer();
 		System.out.println("Issuer DID: " + issuer.toString());
 
-		ResolutionResult resolutionResult = clientUniResolver.resolve(issuer.toString());
-		System.out.println(resolutionResult.toJson());
-		DIDDocument didDocument = resolutionResult.getDidDocument();
+		ResolveResult resolveResult = clientUniResolver.resolve(issuer.toString());
+		System.out.println(resolveResult.toJson());
+		DIDDocument didDocument = resolveResult.getDidDocument();
 		System.out.println(JsonUtils.toPrettyString(didDocument.getJsonLdObject()));
 		String issuerPublicKeyBase58 = didDocument.getPublicKeys().get(0).getPublicKeyBase58();
 		issuerPublicKey = Base58.decode(issuerPublicKeyBase58);
